@@ -1,9 +1,9 @@
 import random
 from mft_record_generator import MFTRecordGenerator
 
-def generate_mft_file(filename, num_records, error_rate=0.1):
+def generate_mft_file(filename, num_records, error_rate=0.1, debug=False):
     """Generate an MFT file with the specified number of records."""
-    generator = MFTRecordGenerator()
+    generator = MFTRecordGenerator(debug)
     with open(filename, 'wb') as f:
         for _ in range(num_records):
             introduce_error = random.random() < error_rate

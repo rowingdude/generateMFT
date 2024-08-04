@@ -1,14 +1,8 @@
 import struct
-from datetime import datetime, timedelta
 import random
+import os
+from datetime import datetime, timedelta
 
-def generate_random_time():
-    """Generate a random Windows timestamp."""
-    now = datetime.now()
-    delta = timedelta(days=random.randint(0, 365 * 10))  # Up to 10 years in the past
-    random_time = now - delta
-    windows_ticks = int((random_time - datetime(1601, 1, 1)).total_seconds() * 10000000)
-    return windows_ticks
 
 class MFTHeader:
     def __init__(self):
@@ -25,13 +19,39 @@ class MFTHeader:
         self.file_reference = random.randint(0, 1000000)
         self.next_attribute_id = random.randint(1, 100)
         self.record_number = random.randint(0, 1000000)
+        self.base_record_segment = 0  
 
-    def pack(self):
-        return struct.pack('<IHHQHHHHIIQHHI', 
-                           self.magic, self.update_sequence_offset, self.update_sequence_count,
-                           self.logfile_sequence_number, self.sequence_number, self.hard_link_count,
-                           self.attribute_offset, self.flags, self.used_size, self.allocated_size,
-                           self.file_reference, self.next_attribute_id, self.record_number)
+
+    def pack(self, debug=False):
+        values = [
+            self.magic,
+            self.update_sequence_offset,
+            self.update_sequence_count,
+            self.logfile_sequence_number,
+            self.sequence_number,
+            self.hard_link_count,
+            self.attribute_offset,
+            self.flags,
+            self.used_size,
+            self.allocated_size,
+            self.file_reference,
+            self.next_attribute_id,
+            self.record_number,
+            self.base_record_segment
+        ]
+        
+        if debug:
+            print("Packing the following values:")
+            for i, value in enumerate(values):
+                print(f"{i+1}: {value} ({type(value).__name__})")
+        
+        try:
+            return struct.pack('<IHHQHHHHIIIQII', *values)
+        except struct.error as e:
+            if debug:
+                print(f"Struct pack error: {e}")
+                print(f"Number of values: {len(values)}")
+            raise
 
 class MFTAttribute:
     def __init__(self, attr_type):
@@ -75,7 +95,7 @@ class MFTAttribute:
         else:
             return os.urandom(random.randint(16, 128))
 
-    def pack(self):
+    def pack(self, debug=False):
         self.length = len(self.content) + 16
         header = struct.pack('<IIBBBHHH',
                              self.type,
@@ -86,3 +106,11 @@ class MFTAttribute:
                              self.flags,
                              self.attribute_id)
         return header + self.content
+
+def generate_random_time():
+    now = datetime.now()
+    max_days = 20 * 365  # 20 years
+    random_days = random.randint(0, max_days)
+    random_time = now - timedelta(days=random_days)
+    windows_ticks = int((random_time - datetime(1601, 1, 1)).total_seconds() * 10000000)
+    return windows_ticks

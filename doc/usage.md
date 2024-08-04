@@ -13,6 +13,16 @@ The MFT Test Generator is a tool designed to create random Master File Table (MF
 - `mft_file_generator.py`: Handles the creation of complete MFT files.
 - `main.py`: Provides an interactive interface for generating MFT files.
 
+## Command-Line Options
+
+The MFT Test Generator now supports the following command-line options:
+
+- `-d, --debug`: Enable debug output. This will print detailed information about each record and attribute being generated.
+- `-o FILENAME, --output FILENAME`: Specify the output filename. Default is "test_mft.bin".
+- `-n NUM_RECORDS, --num-records NUM_RECORDS`: Specify the number of records to generate. Default is 1000.
+- `-e ERROR_RATE, --error-rate ERROR_RATE`: Specify the error rate (0.0 to 1.0). Default is 0.05 (5%).
+
+
 ## Basic Usage
 
 1. Ensure all the Python files are in the same directory.
