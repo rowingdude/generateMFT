@@ -1,0 +1,12 @@
+README.md
+license
+setup.py
+generateMFT.egg-info/PKG-INFO
+generateMFT.egg-info/SOURCES.txt
+generateMFT.egg-info/dependency_links.txt
+generateMFT.egg-info/top_level.txt
+src/__init__.py
+src/mft_file_generator.py
+src/mft_generator.py
+src/mft_record_generator.py
+src/mft_structures.py
